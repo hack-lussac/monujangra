@@ -1,4 +1,4 @@
-export type IpoStatus = 'Open' | 'Upcoming' | 'Listed';
+export type IpoStatus = 'Open' | 'Upcoming' | 'Closed' | 'Listed';
 
 export type Ipo = {
   id: number;
@@ -59,8 +59,8 @@ export const ipos: Ipo[] = [
   },
   {
     id: 2,
-    companyName: 'GreenEnergy Power',
-    slug: 'greenenergy-power',
+    companyName: 'GreenEnergy',
+    slug: 'greenenergy',
     status: 'Upcoming',
     overview: 'Renewable power EPC and utility-scale storage solutions provider.',
     openDate: '2026-03-09',
@@ -91,7 +91,7 @@ export const ipos: Ipo[] = [
     id: 3,
     companyName: 'FinEdge Capital',
     slug: 'finedge-capital',
-    status: 'Listed',
+    status: 'Closed',
     overview: 'Retail broking and wealth-tech platform focused on tier-2 penetration.',
     openDate: '2026-02-20',
     closeDate: '2026-02-24',
@@ -115,32 +115,33 @@ export const ipos: Ipo[] = [
       threats: ['Regulatory fee changes']
     },
     riskMeter: 'Low',
-    faqs: [{ q: 'What does listed status mean?', a: 'The IPO has debuted on the exchange.' }]
+    faqs: [{ q: 'What does closed status mean?', a: 'The subscription window has ended and allotment is in process.' }]
   }
 ];
 
 export const blogs = [
   {
     id: 1,
-    title: 'How to Evaluate IPO Valuation Like a Pro',
-    slug: 'evaluate-ipo-valuation',
-    category: 'Investment Guide',
+    title: 'TechNova IPO GMP Surges 25% – Should You Apply?',
+    slug: 'technova-ipo-gmp-surges-25',
+    category: 'IPO News',
     author: 'Riya Sharma',
     authorBio: 'SEBI-registered research analyst with 9+ years tracking primary markets.',
-    excerpt: 'A practical framework to compare IPO pricing with listed peers.',
-    content: 'Use P/E, EV/EBITDA, growth quality, free cash flow and governance to triangulate fair value.',
-    metaTitle: 'IPO Valuation Guide: How to Assess Pricing',
-    metaDescription: 'Learn a step-by-step framework to evaluate IPO valuation before investing.'
+    excerpt: 'TechNova’s GMP momentum has accelerated. Here is a data-first framework before you apply.',
+    content:
+      '# Snapshot\nTechNova is commanding a strong grey market premium and healthy retail demand.\n\n## What is driving GMP?\nDemand from institutions, sector momentum and strong revenue quality are contributing factors.\n\n## Valuation check\nAt the upper price band, compare peers on growth, margin profile and return ratios.\n\n## Risks\nUnlisted market prices are unofficial and can reverse quickly near listing day.\n\n## Final take\nApply only if IPO size, valuation and risk profile match your allocation strategy.',
+    metaTitle: 'TechNova IPO GMP Surges 25% - Apply or Skip?',
+    metaDescription: 'A practical breakdown of TechNova IPO GMP move, valuation context and risks.'
   },
   {
     id: 2,
     title: 'Top GMP Movers This Week',
     slug: 'top-gmp-movers-week',
-    category: 'IPO News',
+    category: 'Market Pulse',
     author: 'Amit Verma',
     authorBio: 'Market editor focused on listing-day trends and demand indicators.',
     excerpt: 'A quick look at IPOs with the strongest GMP momentum.',
-    content: 'Strong institutional participation and improving sentiment pushed GMP higher this week.',
+    content: '# Weekly trend\nStrong institutional participation pushed GMP higher this week.',
     metaTitle: 'Weekly GMP Movers and Sentiment',
     metaDescription: 'Track the strongest GMP performers with context and risk notes.'
   }
