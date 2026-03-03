@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { ipos } from '@/app/lib/data';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const payload = ipos.map((ipo) => ({
     companyName: ipo.companyName,

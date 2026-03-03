@@ -3,6 +3,8 @@ import { ipos } from '@/app/lib/data';
 import { sanitizeText } from '@/app/lib/security/sanitize';
 import { logRequest, logError } from '@/app/lib/server/logger';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     const status = req.nextUrl.searchParams.get('status') as 'Open' | 'Upcoming' | 'Closed' | 'Listed' | null;
