@@ -2,6 +2,17 @@ import { GmpChart } from '@/app/components/gmp-chart';
 import { ipos } from '@/app/lib/data';
 
 export default function GmpPage() {
+  const maxTrendPoints = Math.max(...ipos.map((ipo) => ipo.gmpHistory.length));
+  const trendData = Array.from({ length: maxTrendPoints }, (_, index) => {
+    const values = ipos.map((ipo) => ipo.gmpHistory[index]).filter((value): value is number => typeof value === 'number');
+    const averageGmp = values.length > 0 ? Math.round(values.reduce((sum, value) => sum + value, 0) / values.length) : 0;
+
+    return {
+      label: `Day ${index + 1}`,
+      gmp: averageGmp
+    };
+  });
+
   return (
     <div className="space-y-6">
       <h1 className="section-title">GMP Live Center</h1>
@@ -17,7 +28,7 @@ export default function GmpPage() {
           </tbody>
         </table>
       </div>
-      <div className="card"><h2 className="mb-3 font-semibold">Trend Chart</h2><GmpChart data={ipos.map((i) => ({ name: i.companyName, gmp: i.gmp }))} /></div>
+      <div className="card"><h2 className="mb-3 font-semibold">Trend Chart</h2><GmpChart data={trendData} /></div>
       <div className="card"><h2 className="font-semibold">Estimated Listing Calculator</h2><p className="mt-2 text-sm">Listing Price = Upper Price Band + GMP</p></div>
     </div>
   );
