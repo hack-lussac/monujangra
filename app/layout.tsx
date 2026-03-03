@@ -4,17 +4,17 @@ import { Header } from './components/header';
 import { Footer } from './components/footer';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ipovision3d.com'),
+  metadataBase: new URL('https://chittoriq.com'),
   title: {
-    default: 'IPO Vision 3D | Next-Gen IPO & GMP Intelligence',
-    template: '%s | IPO Vision 3D'
+    default: 'ChittorIQ | Modern IPO, GMP & Listing Gain Platform',
+    template: '%s | ChittorIQ'
   },
-  description: 'Futuristic, secure and automated IPO intelligence platform with premium investor-grade analytics.',
+  description: 'Modern IPO and grey market premium intelligence portal with live trackers, calculators, and investor insights.',
   openGraph: {
-    title: 'IPO Vision 3D',
-    description: 'Real-time IPO/GMP dashboard with automation, tools and enterprise security.',
+    title: 'ChittorIQ',
+    description: 'Track IPO GMP, subscription data, listing estimates, and market insights in real-time.',
     type: 'website',
-    url: 'https://ipovision3d.com'
+    url: 'https://chittoriq.com'
   }
 };
 
