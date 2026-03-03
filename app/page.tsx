@@ -1,201 +1,113 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { ipos } from './lib/data';
 import { normalizePath, ipoPath } from './lib/paths';
 
-const quickTabs = [
-  { label: 'Mainboard IPOs & FPOs', href: '/' },
-  { label: 'SME IPOs & FPOs', href: '/' },
-  { label: 'NCD Issues', href: '/tools' },
-  { label: 'Rights Issues', href: '/tools' },
-  { label: 'Offer for Sale', href: '/gmp' },
-  { label: 'IPO Reports', href: '/blog' },
-  { label: 'Stock Broker', href: '/tools' }
-];
-
-const upcomingFiled = [
-  ['Oravel Stays', '31 Dec'],
-  ['Bonfiglioli Transmissions', '09 Feb'],
-  ['Marri Retail', '01 Feb'],
-  ['SRIT India', '29 Jan'],
-  ['Kanohar Electricals', '23 Jan'],
-  ['Madhur Iron & Steel (India)', '23 Jan']
-];
-
-const upcomingApproved = [
-  ['Alpine Texworld', '20 Feb'],
-  ['Appl Containers', '20 Feb'],
-  ['Anjali Labtech', '17 Feb'],
-  ['Integris Medtech', '13 Feb'],
-  ['Om Power Transmission', '13 Feb'],
-  ['Duroflex', '12 Feb']
-];
-
-const rightsIssues = [
-  ['Steelco Gujarat', '-', '-'],
-  ['S. M. Gold', '-', '-'],
-  ['Hilton Metal Forging', '24 Feb', '13 - 23 Mar'],
-  ['Nexome Capital Markets', '05 Mar', '-'],
-  ['Enbee Trade & Finance', '04 Mar', '12 - 20 Mar']
-];
-
-const ncdIssues = [
-  ['Edelweiss Financial Services', '8.64 - 10.10', '02 - 16 Mar'],
-  ['Chemmanur Credits & Investments', '9.25 - 12.68', '02 - 16 Mar'],
-  ['Prachay Capital', '13.24 - 13.80', '26 Feb - 12 Mar'],
-  ['IIFL Finance', '8.69 - 9.00', '17 Feb - 04 Mar'],
-  ['Nashik Municipal Corporation', '-', '25 Feb - 02 Mar']
-];
-
-const ofsRows = [
-  ['Indian Railway Finance Corporation', '25 Feb', '26 Feb'],
-  ['Bharat Heavy Electricals', '11 Feb', '12 Feb'],
-  ['Indigrid Infrastructure Trust', '05 Feb', '06 Feb'],
-  ['Aanchal Ispat', '03 Feb', '04 Feb'],
-  ['Hindustan Zinc', '28 Jan', '29 Jan']
-];
-
-const brokerCards = [
-  'Zerodha',
-  'Upstox',
-  'ProStocks',
-  'Paytm Money Limited'
+const dashboardTabs = [
+  { label: 'Mainboard IPOs', href: '/mainboard', description: 'Live issue calendar and status' },
+  { label: 'SME IPOs', href: '/sme', description: 'SME fundraising opportunities' },
+  { label: 'NCD Issues', href: '/ncd', description: 'Debt market offerings' },
+  { label: 'Rights Issues', href: '/rights', description: 'Corporate rights windows' },
+  { label: 'Offer For Sale', href: '/ofs', description: 'Promoter OFS opportunities' },
+  { label: 'IPO Reports', href: '/reports', description: 'Data-backed IPO snapshots' },
+  { label: 'Stock Brokers', href: '/brokers', description: 'Broker comparison dashboard' }
 ];
 
 export default function HomePage() {
-  const mainboard = ipos.slice(0, 8);
-  const sme = [...ipos].reverse().slice(0, 8);
+  const openIpos = ipos.filter((ipo) => ipo.status === 'Open' || ipo.status === 'Upcoming');
+  const listedIpos = ipos.filter((ipo) => ipo.status === 'Listed' || ipo.status === 'Closed');
 
   return (
-    <div className="space-y-6 rounded-2xl bg-[#e8edf3] p-3 text-[#1f2937] md:p-6">
-      <section className="rounded-2xl bg-white p-4 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-2xl font-bold tracking-tight text-[#0f172a] md:text-3xl">IPOs, NCDs, OFS, Rights Issues, Buyback and Stock Brokers</h1>
-          <Link href="/gmp" className="rounded-md border border-[#1d4ed8] px-3 py-1 text-sm font-medium text-[#1d4ed8] hover:bg-blue-50">
-            Open account offers
+    <div className="space-y-6">
+      <section className="glass-card relative overflow-hidden p-8">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(0,200,83,0.25),transparent_35%),radial-gradient(circle_at_85%_10%,rgba(41,121,255,0.32),transparent_38%)]" />
+        <div className="relative flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-slate-300">Monu Jangra IPO</p>
+            <h1 className="mt-2 text-4xl font-bold text-white md:text-5xl">Full-Screen IPO Intelligence Dashboard</h1>
+            <p className="mt-3 max-w-3xl text-slate-200">Track GMP, subscription depth, issue timelines, and listing expectations from one refined control center.</p>
+          </div>
+          <Link href="/dashboard" className="rounded-xl bg-[#00C853] px-5 py-2.5 font-semibold text-slate-900 hover:brightness-110">
+            Open Dashboard
           </Link>
         </div>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
-          {quickTabs.map((tab) => (
-            <Link
-              key={tab.label}
-              href={normalizePath(tab.href)}
-              className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-[#0f172a] shadow-sm transition hover:border-[#1d4ed8] hover:text-[#1d4ed8]"
-            >
-              {tab.label}
-            </Link>
-          ))}
+        <div className="relative mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <MetricCard label="Active Issues" value={String(openIpos.length)} detail="Open + Upcoming" />
+          <MetricCard label="Average GMP" value={`₹${Math.round(ipos.reduce((sum, ipo) => sum + ipo.gmp, 0) / ipos.length)}`} detail="Across tracked IPOs" />
+          <MetricCard label="Top Retail Subscription" value={`${Math.max(...ipos.map((ipo) => ipo.subscription.retail)).toFixed(1)}x`} detail="Peak retail demand" />
+          <MetricCard label="Tracked Companies" value={String(ipos.length)} detail="Continuously updated" />
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-2">
-        <TableCard
-          title="Mainboard IPOs & FPOs 2026"
-          columns={['Company', 'Issue Dates']}
-          rows={mainboard.map((ipo) => ({ cells: [ipo.companyName, `${ipo.openDate} - ${ipo.closeDate}`], href: ipoPath(ipo.slug) }))}
+      <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        {dashboardTabs.map((tab) => (
+          <Link
+            key={tab.label}
+            href={normalizePath(tab.href)}
+            className="glass-card rounded-xl p-4 transition hover:-translate-y-0.5 hover:border-[#00C853]"
+          >
+            <p className="text-sm font-semibold text-white">{tab.label}</p>
+            <p className="mt-1 text-xs text-slate-300">{tab.description}</p>
+          </Link>
+        ))}
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-2">
+        <DataTable
+          title="Active IPO Window"
+          columns={['Company', 'Issue Dates', 'GMP', 'Action']}
+          rows={openIpos.map((ipo) => [
+            ipo.companyName,
+            `${ipo.openDate} → ${ipo.closeDate}`,
+            `₹${ipo.gmp}`,
+            <Link key={ipo.id} href={ipoPath(ipo.slug)} className="text-[#7eb0ff] hover:underline">View</Link>
+          ])}
         />
-        <TableCard
-          title="SME IPOs & FPOs 2026"
-          columns={['Company', 'Issue Dates']}
-          rows={sme.map((ipo) => ({ cells: [ipo.companyName, `${ipo.openDate} - ${ipo.closeDate}`], href: ipoPath(ipo.slug) }))}
+        <DataTable
+          title="Closed / Listed Tracker"
+          columns={['Company', 'Status', 'Issue Size', 'Risk']}
+          rows={listedIpos.map((ipo) => [ipo.companyName, ipo.status, ipo.issueSize, ipo.riskMeter])}
         />
-      </section>
-
-      <section className="grid gap-4 lg:grid-cols-2">
-        <TableCard title="Upcoming Mainboard IPOs (Filed)" columns={['Company', 'Filing Date']} rows={upcomingFiled.map((row) => ({ cells: row }))} footerLink="More Upcoming Mainboard IPOs ..." />
-        <TableCard title="Upcoming Mainboard IPOs (Approved)" columns={['Company', 'Approval Date']} rows={upcomingApproved.map((row) => ({ cells: row }))} footerLink="More Upcoming Mainboard IPOs ..." />
-      </section>
-
-      <section className="grid gap-4 lg:grid-cols-2">
-        <TableCard title="Rights Issue 2026" columns={['Company', 'Record', 'Issue Date']} rows={rightsIssues.map((row) => ({ cells: row }))} />
-        <TableCard title="NCD Issues 2026" columns={['Company', 'Effective Yield (%)', 'Issue Date']} rows={ncdIssues.map((row) => ({ cells: row }))} highlightRows />
-      </section>
-
-      <section className="grid gap-4 lg:grid-cols-2">
-        <TableCard title="Offer for sale (OFS) 2026" columns={['Company', 'Non Retail', 'Retail']} rows={ofsRows.map((row) => ({ cells: row }))} footerLink="More OFS ..." />
-        <TableCard title="Buyback 2026" columns={['Issuer Company', 'Issue Date', 'Record Date']} rows={[{ cells: ['No records found', '', ''] }]} footerLink="More Buyback ..." />
-      </section>
-
-      <section className="rounded-2xl bg-white p-6 text-center shadow-sm">
-        <h2 className="text-3xl font-bold text-[#0f172a]">Stock Broker Reviews India</h2>
-        <div className="mt-2 flex justify-center gap-6 text-sm font-medium">
-          <span className="border-b-2 border-emerald-600 pb-1 text-emerald-700">Discount Brokers</span>
-          <span className="pb-1 text-slate-500">Full-Service Brokers</span>
-        </div>
-        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {brokerCards.map((name) => (
-            <article key={name} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
-              <p className="text-xl font-semibold text-[#1d4ed8]">{name}</p>
-              <p className="mt-2 text-sm text-slate-600">Detailed broker comparison, pricing and account opening links.</p>
-              <Link href="/tools" className="mt-3 inline-block text-sm font-medium text-[#1d4ed8] hover:underline">
-                Open details →
-              </Link>
-            </article>
-          ))}
-        </div>
       </section>
     </div>
   );
 }
 
-type TableRow = {
-  cells: string[];
-  href?: string;
-};
-
-function TableCard({
-  title,
-  columns,
-  rows,
-  footerLink,
-  highlightRows
-}: {
-  title: string;
-  columns: string[];
-  rows: TableRow[];
-  footerLink?: string;
-  highlightRows?: boolean;
-}) {
+function MetricCard({ label, value, detail }: { label: string; value: string; detail: string }) {
   return (
-    <article className="rounded-xl bg-[#f8fafc] p-3 shadow-sm ring-1 ring-slate-200">
-      <h3 className="text-2xl font-semibold text-[#111827]">{title}</h3>
-      <div className="mt-3 overflow-x-auto rounded-md border border-slate-200 bg-white">
+    <article className="rounded-xl border border-white/15 bg-[#081523]/75 p-4">
+      <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
+      <p className="mt-2 text-3xl font-bold text-white">{value}</p>
+      <p className="mt-1 text-xs text-slate-300">{detail}</p>
+    </article>
+  );
+}
+
+function DataTable({ title, columns, rows }: { title: string; columns: string[]; rows: ReactNode[][] }) {
+  return (
+    <article className="glass-card overflow-hidden p-0">
+      <h2 className="border-b border-white/10 bg-[#0f2238] px-4 py-3 text-lg font-semibold text-white">{title}</h2>
+      <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-100 text-[#111827]">
+          <thead className="bg-[#132b45] text-slate-200">
             <tr>
               {columns.map((column) => (
-                <th key={column} className="px-3 py-2 font-semibold">{column}</th>
+                <th key={column} className="px-4 py-2.5 font-medium">{column}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, rowIndex) => {
-              const rowClassName = `border-t border-slate-200 ${highlightRows && rowIndex < 4 ? 'bg-emerald-100/70' : ''}`;
-              return (
-                <tr key={`${row.cells[0]}-${rowIndex}`} className={rowClassName}>
-                  {columns.map((_, colIndex) => {
-                    const value = row.cells[colIndex];
-                    const content = colIndex === 0 && row.href ? (
-                      <Link href={normalizePath(row.href)} className="font-medium text-[#1d4ed8] hover:underline">
-                        {value}
-                      </Link>
-                    ) : (
-                      value
-                    );
-
-                    return (
-                      <td key={`${row.cells[0]}-${colIndex}`} className="px-3 py-2 text-[#1d4ed8] first:text-[#0f172a]">
-                        {content}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
+            {rows.map((row, rowIndex) => (
+              <tr key={`${rowIndex}`} className="border-t border-white/10">
+                {row.map((value, colIndex) => (
+                  <td key={`${rowIndex}-${colIndex}`} className="px-4 py-2.5 text-slate-100">{value}</td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-      {footerLink ? <p className="pt-4 text-center text-[#1d4ed8]">{footerLink}</p> : null}
     </article>
   );
 }
