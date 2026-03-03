@@ -1,8 +1,10 @@
 'use client';
 
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { ipos } from '@/app/lib/data';
+import { ipoPath } from '@/app/lib/paths';
 
 export default function GmpPage() {
   const [query, setQuery] = useState('');
@@ -25,11 +27,19 @@ export default function GmpPage() {
       <div className="glass-card p-4">
         <input value={query} onChange={(e) => setQuery(e.target.value)} className="w-full rounded-xl border border-white/20 bg-[#081320] p-2" placeholder="Search IPO" />
         <table className="mt-4 w-full text-sm">
-          <thead><tr className="text-left text-slate-300"><th>IPO</th><th>Status</th><th>GMP</th><th>Estimated Listing</th></tr></thead>
+          <thead><tr className="text-left text-slate-300"><th>IPO</th><th>Status</th><th>GMP</th><th>Estimated Listing</th><th>Action</th></tr></thead>
           <tbody>
             {sorted.map((ipo) => (
               <tr key={ipo.id} className="border-t border-white/10">
-                <td>{ipo.companyName}</td><td>{ipo.status}</td><td className="text-[#00C853]">₹{ipo.gmp}</td><td>₹{ipo.priceBandMax + ipo.gmp}</td>
+                <td>{ipo.companyName}</td>
+                <td>{ipo.status}</td>
+                <td className="text-[#00C853]">₹{ipo.gmp}</td>
+                <td>₹{ipo.priceBandMax + ipo.gmp}</td>
+                <td>
+                  <Link href={ipoPath(ipo.slug)} className="text-[#7eb0ff] hover:underline">
+                    Open details
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>

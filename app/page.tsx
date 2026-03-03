@@ -1,14 +1,15 @@
 import Link from 'next/link';
 import { ipos } from './lib/data';
+import { normalizePath, ipoPath } from './lib/paths';
 
 const quickTabs = [
-  'Mainboard IPOs & FPOs',
-  'SME IPOs & FPOs',
-  'NCD Issues',
-  'Rights Issues',
-  'Offer for Sale',
-  'IPO Reports',
-  'Stock Broker'
+  { label: 'Mainboard IPOs & FPOs', href: '/' },
+  { label: 'SME IPOs & FPOs', href: '/' },
+  { label: 'NCD Issues', href: '/tools' },
+  { label: 'Rights Issues', href: '/tools' },
+  { label: 'Offer for Sale', href: '/gmp' },
+  { label: 'IPO Reports', href: '/blog' },
+  { label: 'Stock Broker', href: '/tools' }
 ];
 
 const upcomingFiled = [
@@ -76,35 +77,43 @@ export default function HomePage() {
 
         <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
           {quickTabs.map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-[#0f172a] shadow-sm"
+            <Link
+              key={tab.label}
+              href={normalizePath(tab.href)}
+              className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-[#0f172a] shadow-sm transition hover:border-[#1d4ed8] hover:text-[#1d4ed8]"
             >
-              {tab}
-            </button>
+              {tab.label}
+            </Link>
           ))}
         </div>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
-        <TableCard title="Mainboard IPOs & FPOs 2026" columns={['Company', 'Issue Dates']} rows={mainboard.map((ipo) => [ipo.companyName, `${ipo.openDate} - ${ipo.closeDate}`])} />
-        <TableCard title="SME IPOs & FPOs 2026" columns={['Company', 'Issue Dates']} rows={sme.map((ipo) => [ipo.companyName, `${ipo.openDate} - ${ipo.closeDate}`])} />
+        <TableCard
+          title="Mainboard IPOs & FPOs 2026"
+          columns={['Company', 'Issue Dates']}
+          rows={mainboard.map((ipo) => ({ cells: [ipo.companyName, `${ipo.openDate} - ${ipo.closeDate}`], href: ipoPath(ipo.slug) }))}
+        />
+        <TableCard
+          title="SME IPOs & FPOs 2026"
+          columns={['Company', 'Issue Dates']}
+          rows={sme.map((ipo) => ({ cells: [ipo.companyName, `${ipo.openDate} - ${ipo.closeDate}`], href: ipoPath(ipo.slug) }))}
+        />
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
-        <TableCard title="Upcoming Mainboard IPOs (Filed)" columns={['Company', 'Filing Date']} rows={upcomingFiled} footerLink="More Upcoming Mainboard IPOs ..." />
-        <TableCard title="Upcoming Mainboard IPOs (Approved)" columns={['Company', 'Approval Date']} rows={upcomingApproved} footerLink="More Upcoming Mainboard IPOs ..." />
+        <TableCard title="Upcoming Mainboard IPOs (Filed)" columns={['Company', 'Filing Date']} rows={upcomingFiled.map((row) => ({ cells: row }))} footerLink="More Upcoming Mainboard IPOs ..." />
+        <TableCard title="Upcoming Mainboard IPOs (Approved)" columns={['Company', 'Approval Date']} rows={upcomingApproved.map((row) => ({ cells: row }))} footerLink="More Upcoming Mainboard IPOs ..." />
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
-        <TableCard title="Rights Issue 2026" columns={['Company', 'Record', 'Issue Date']} rows={rightsIssues} />
-        <TableCard title="NCD Issues 2026" columns={['Company', 'Effective Yield (%)', 'Issue Date']} rows={ncdIssues} highlightRows />
+        <TableCard title="Rights Issue 2026" columns={['Company', 'Record', 'Issue Date']} rows={rightsIssues.map((row) => ({ cells: row }))} />
+        <TableCard title="NCD Issues 2026" columns={['Company', 'Effective Yield (%)', 'Issue Date']} rows={ncdIssues.map((row) => ({ cells: row }))} highlightRows />
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
-        <TableCard title="Offer for sale (OFS) 2026" columns={['Company', 'Non Retail', 'Retail']} rows={ofsRows} footerLink="More OFS ..." />
-        <TableCard title="Buyback 2026" columns={['Issuer Company', 'Issue Date', 'Record Date']} rows={[['No records found', '', '']]} footerLink="More Buyback ..." />
+        <TableCard title="Offer for sale (OFS) 2026" columns={['Company', 'Non Retail', 'Retail']} rows={ofsRows.map((row) => ({ cells: row }))} footerLink="More OFS ..." />
+        <TableCard title="Buyback 2026" columns={['Issuer Company', 'Issue Date', 'Record Date']} rows={[{ cells: ['No records found', '', ''] }]} footerLink="More Buyback ..." />
       </section>
 
       <section className="rounded-2xl bg-white p-6 text-center shadow-sm">
@@ -118,6 +127,9 @@ export default function HomePage() {
             <article key={name} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
               <p className="text-xl font-semibold text-[#1d4ed8]">{name}</p>
               <p className="mt-2 text-sm text-slate-600">Detailed broker comparison, pricing and account opening links.</p>
+              <Link href="/tools" className="mt-3 inline-block text-sm font-medium text-[#1d4ed8] hover:underline">
+                Open details →
+              </Link>
             </article>
           ))}
         </div>
@@ -125,6 +137,11 @@ export default function HomePage() {
     </div>
   );
 }
+
+type TableRow = {
+  cells: string[];
+  href?: string;
+};
 
 function TableCard({
   title,
@@ -135,7 +152,7 @@ function TableCard({
 }: {
   title: string;
   columns: string[];
-  rows: string[][];
+  rows: TableRow[];
   footerLink?: string;
   highlightRows?: boolean;
 }) {
@@ -152,15 +169,29 @@ function TableCard({
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, rowIndex) => (
-              <tr key={`${row[0]}-${rowIndex}`} className={`border-t border-slate-200 ${highlightRows && rowIndex < 4 ? 'bg-emerald-100/70' : ''}`}>
-                {columns.map((_, colIndex) => (
-                  <td key={`${row[0]}-${colIndex}`} className="px-3 py-2 text-[#1d4ed8] first:text-[#0f172a]">
-                    {row[colIndex]}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {rows.map((row, rowIndex) => {
+              const rowClassName = `border-t border-slate-200 ${highlightRows && rowIndex < 4 ? 'bg-emerald-100/70' : ''}`;
+              return (
+                <tr key={`${row.cells[0]}-${rowIndex}`} className={rowClassName}>
+                  {columns.map((_, colIndex) => {
+                    const value = row.cells[colIndex];
+                    const content = colIndex === 0 && row.href ? (
+                      <Link href={normalizePath(row.href)} className="font-medium text-[#1d4ed8] hover:underline">
+                        {value}
+                      </Link>
+                    ) : (
+                      value
+                    );
+
+                    return (
+                      <td key={`${row.cells[0]}-${colIndex}`} className="px-3 py-2 text-[#1d4ed8] first:text-[#0f172a]">
+                        {content}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
