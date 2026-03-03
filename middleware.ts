@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from './app/lib/server/rate-limit';
 
+const scriptSrc = ["'self'", "'unsafe-inline'", process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''].filter(Boolean).join(' ');
+
 const securityHeaders = {
-  'Content-Security-Policy': "default-src 'self'; img-src 'self' data: https:; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none';",
+  'Content-Security-Policy': `default-src 'self'; img-src 'self' data: https:; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none';`,
   'X-Frame-Options': 'DENY',
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
