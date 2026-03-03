@@ -7,12 +7,25 @@ import { Footer } from './components/footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'IPO Insider Pro - Live IPO GMP, Subscription & Analysis',
-  description: 'Live IPO updates, GMP trends, subscription data, company financials, and expert investment guides.',
+  metadataBase: new URL('https://ipopulsepro.com'),
+  title: {
+    default: 'IPO Pulse Pro | Secure IPO & GMP Intelligence Platform',
+    template: '%s | IPO Pulse Pro'
+  },
+  description: 'Enterprise-grade IPO, GMP, subscription, and listing analytics platform for serious investors.',
   openGraph: {
-    title: 'IPO Insider Pro',
-    description: 'Live IPO and GMP insights for smarter listing-day decisions.',
-    type: 'website'
+    title: 'IPO Pulse Pro',
+    description: 'Real-time IPO intelligence with secure admin workflows and advanced investor tools.',
+    type: 'website',
+    url: 'https://ipopulsepro.com'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'IPO Pulse Pro',
+    description: 'Premium IPO and GMP analytics for smarter listing decisions.'
+  },
+  alternates: {
+    canonical: '/'
   }
 };
 
