@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  role      String   @default("author")
+  blogs     Blog[]
+  createdAt DateTime @default(now())
+}
+
+model IPO {
+  id            Int                @id @default(autoincrement())
+  name          String
+  slug          String             @unique
+  status        String
+  openDate      DateTime
+  closeDate     DateTime
+  priceBand     String
+  lotSize       Int
+  issueSize     String
+  registrar     String
+  leadManagers  String
+  gmp           Float
+  listingPrice  Float
+  subscriptions SubscriptionData[]
+  createdAt     DateTime           @default(now())
+}
+
+model SubscriptionData {
+  id      Int    @id @default(autoincrement())
+  ipoId   Int
+  qib     Float
+  nii     Float
+  retail  Float
+  ipo     IPO    @relation(fields: [ipoId], references: [id])
+}
+
+model Blog {
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  category    String
+  content     String
+  excerpt     String
+  authorId    Int
+  author      User     @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+}
