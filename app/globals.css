@@ -3,21 +3,47 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 body {
-  @apply bg-white text-slate-800 antialiased;
+  @apply min-h-screen bg-[#0B1C2D] text-slate-100 antialiased;
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(0, 200, 83, 0.18), transparent 30%),
+    radial-gradient(circle at 100% 0%, rgba(41, 121, 255, 0.2), transparent 35%),
+    linear-gradient(180deg, #0b1c2d 0%, #0e2238 100%);
 }
 
 .dark body {
-  @apply bg-slate-950 text-slate-100;
+  @apply bg-[#081523] text-slate-100;
 }
 
-.card {
-  @apply rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900;
+.card,
+.glass-card {
+  @apply rounded-2xl border border-white/15 bg-white/10 shadow-xl backdrop-blur-xl;
 }
 
 .section-title {
-  @apply text-2xl font-semibold text-primary dark:text-slate-100;
+  @apply text-3xl font-semibold text-white;
+}
+
+.card-tilt {
+  transform-style: preserve-3d;
+  transition: transform 250ms ease, box-shadow 250ms ease;
+}
+
+.card-tilt:hover {
+  transform: perspective(1000px) rotateX(3deg) rotateY(-4deg) translateY(-4px);
+}
+
+.ticker {
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+  animation: ticker 18s linear infinite;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }

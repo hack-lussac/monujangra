@@ -3,12 +3,13 @@
 import { useEffect, useState } from 'react';
 
 export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem('theme') === 'dark';
-    setDark(saved);
-    document.documentElement.classList.toggle('dark', saved);
+    const saved = localStorage.getItem('theme');
+    const isDark = saved ? saved === 'dark' : true;
+    setDark(isDark);
+    document.documentElement.classList.toggle('dark', isDark);
   }, []);
 
   const toggle = () => {
@@ -19,7 +20,7 @@ export function ThemeToggle() {
   };
 
   return (
-    <button onClick={toggle} className="rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-slate-700">
+    <button onClick={toggle} className="rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-slate-100">
       {dark ? '☀️ Light' : '🌙 Dark'}
     </button>
   );
