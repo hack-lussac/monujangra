@@ -1,4 +1,4 @@
-import { createHmac } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { env } from '../env';
 
 export type JwtPayload = {
@@ -18,10 +18,27 @@ export async function signAuthToken(payload: JwtPayload) {
 }
 
 export async function verifyAuthToken(token: string) {
-  const [header, body, signature] = token.split('.');
+  const tokenParts = token.split('.');
+  if (tokenParts.length !== 3 || tokenParts.some((part) => !part)) {
+    throw new Error('Invalid token');
+  }
+
+  const [header, body, signature] = tokenParts;
   const expected = createHmac('sha256', env.JWT_SECRET).update(`${header}.${body}`).digest('base64url');
-  if (signature !== expected) throw new Error('Invalid token');
-  const payload = JSON.parse(Buffer.from(body, 'base64url').toString()) as JwtPayload;
+
+  const signatureBuffer = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expected);
+  if (
+    signatureBuffer.length !== expectedBuffer.length ||
+    !timingSafeEqual(signatureBuffer, expectedBuffer)
+  ) {
+    throw new Error('Invalid token');
+  }
+
+  const payload = JSON.parse(Buffer.from(body, 'base64url').toString()) as Partial<JwtPayload>;
+  if (!payload.sub || !payload.email || !payload.role) {
+    throw new Error('Invalid token payload');
+  }
   if (!payload.exp || payload.exp < Math.floor(Date.now() / 1000)) throw new Error('Expired token');
-  return payload;
+  return payload as JwtPayload;
 }
