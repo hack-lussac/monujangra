@@ -7,50 +7,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  role      String   @default("author")
-  blogs     Blog[]
-  createdAt DateTime @default(now())
-}
-
 model IPO {
-  id            Int                @id @default(autoincrement())
-  name          String
-  slug          String             @unique
-  status        String
-  openDate      DateTime
-  closeDate     DateTime
-  priceBand     String
-  lotSize       Int
-  issueSize     String
-  registrar     String
-  leadManagers  String
-  gmp           Float
-  listingPrice  Float
-  subscriptions SubscriptionData[]
-  createdAt     DateTime           @default(now())
-}
+  id                  Int      @id @default(autoincrement())
+  company_name        String
+  slug                String   @unique
+  open_date           DateTime
+  close_date          DateTime
+  price_band_min      Int
+  price_band_max      Int
+  lot_size            Int
+  issue_size          String
+  gmp                 Int
+  subscription_qib    Float
+  subscription_nii    Float
+  subscription_retail Float
+  financials_json     Json
+  status              String
+  created_at          DateTime @default(now())
 
-model SubscriptionData {
-  id      Int    @id @default(autoincrement())
-  ipoId   Int
-  qib     Float
-  nii     Float
-  retail  Float
-  ipo     IPO    @relation(fields: [ipoId], references: [id])
+  @@index([slug])
+  @@index([status])
 }
 
 model Blog {
-  id          Int      @id @default(autoincrement())
-  title       String
-  slug        String   @unique
-  category    String
-  content     String
-  excerpt     String
-  authorId    Int
-  author      User     @relation(fields: [authorId], references: [id])
-  createdAt   DateTime @default(now())
+  id               Int      @id @default(autoincrement())
+  title            String
+  slug             String   @unique
+  content          String
+  category         String
+  meta_title       String
+  meta_description String
+  featured_image   String?
+  author           String
+  created_at       DateTime @default(now())
+
+  @@index([slug])
+  @@index([category])
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  password_hash String
+  role          String
+  created_at    DateTime @default(now())
+
+  @@index([email])
+  @@index([role])
 }
