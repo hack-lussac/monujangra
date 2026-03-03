@@ -7,13 +7,13 @@ import type { Ipo } from '@/app/lib/data';
 
 export function HomeDashboard({ ipos }: { ipos: Ipo[] }) {
   const [tick, setTick] = useState(0);
-  const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [lastUpdate, setLastUpdate] = useState<string>('—');
   const [gmpData, setGmpData] = useState(ipos.map((ipo) => ({ ...ipo, liveGmp: ipo.gmp, direction: 0 })));
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTick((value) => value + 1);
-      setLastUpdate(new Date());
+      setLastUpdate(new Date().toLocaleTimeString());
       setGmpData((current) =>
         current.map((ipo) => {
           const move = Math.floor(Math.random() * 5) - 2;
@@ -132,7 +132,7 @@ export function HomeDashboard({ ipos }: { ipos: Ipo[] }) {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <p className="text-xs text-slate-300">Mock real-time sync #{tick} • Updated {lastUpdate.toLocaleTimeString()}</p>
+          <p className="text-xs text-slate-300">Mock real-time sync #{tick} • Updated {lastUpdate}</p>
         </div>
       </section>
 
