@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { Area, AreaChart, Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { Ipo } from '@/app/lib/data';
+import { ipoPath } from '@/app/lib/paths';
 
 export function HomeDashboard({ ipos }: { ipos: Ipo[] }) {
   const [tick, setTick] = useState(0);
@@ -97,6 +98,7 @@ export function HomeDashboard({ ipos }: { ipos: Ipo[] }) {
                 GMP ₹{ipo.liveGmp}
               </p>
               <p className="text-sm text-slate-300">Estimated Listing ₹{estimate} • Gain {gain}%</p>
+              <Link href={ipoPath(ipo.slug)} className="mt-3 inline-block text-sm font-medium text-[#8ab4ff] hover:underline">Open IPO details →</Link>
             </article>
           );
         })}
